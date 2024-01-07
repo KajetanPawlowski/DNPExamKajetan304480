@@ -1,1 +1,9 @@
 /.idea/
+**/bin/*
+**/obj/*
+**/bin/**
+**/obj/**
+data.json
+/.git/
+Exam.db
+**/Migrations/*
