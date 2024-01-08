@@ -1,0 +1,46 @@
+@page "/SendMail"
+@using Blazor.Data
+@using System.Text.Json
+@inject IEmailService emailService;
+@inject NavigationManager navMgr;
+<PageTitle>Send mail</PageTitle>
+<h3>Send Mail</h3>
+
+<div class="card">
+    <div class="card-title">
+        <input class="title-field input-field post-card" type="text" placeholder="Receiver name" @bind="NextReceiverName">
+        <input class="title-field input-field post-card" type="text" placeholder="Title" @bind="NextTitle">
+    </div>
+    <div class="card-body">
+        <textarea class="body-field input-field post-card" type="text" placeholder="Write your email here" rows="10" @bind="NextBody"></textarea>
+    </div>
+    <div class="card-footer">
+        <button @onclick="() => SendMailBtn()">Send Mail</button>
+    </div>
+    
+</div>
+
+
+@code {
+    string NextReceiverName;
+    string NextTitle;
+    string NextBody;
+
+    private async Task SendMailBtn()
+    {
+        //Sender and Timestamp left null - assigned by the email service 
+        Email next = new()
+        {
+            ReceiverName = NextReceiverName,
+            Title = NextTitle,
+            Body = NextBody
+        };
+        Email result = await emailService.SendEmail(next);
+        Console.WriteLine(JsonSerializer.Serialize(result));
+        NextReceiverName = "";
+        NextTitle = "";
+        NextBody = "";
+        navMgr.NavigateTo("/");
+    }
+    
+}

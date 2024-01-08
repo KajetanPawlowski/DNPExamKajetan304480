@@ -1,0 +1,14 @@
+@using Blazor.Data
+@inject IEmailService EmailService
+<div>Incoming: @incoming | Send: @send</div>
+
+@code {
+    int incoming = 0;
+    int send = 0;
+    protected override void OnInitialized()
+    {
+        incoming = EmailService.GetIncomingCount();
+        send = EmailService.GetSendCount();
+    }
+
+}

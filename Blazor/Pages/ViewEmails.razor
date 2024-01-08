@@ -1,0 +1,62 @@
+﻿@page "/"
+@using Blazor.Data
+@inject IEmailService emailService;
+@inject NavigationManager navMgr;
+
+<PageTitle>View mails</PageTitle>
+
+<h3>View Mails <button @onclick="NewMail">New Mail</button></h3>
+
+@if (_emails == null)
+{
+    <p>Loading....</p>
+}
+else if (!_emails.Any())
+{
+    <p>No Emails to display</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-3">
+            <InOutComponent/>
+            @foreach (var mail in _emails)
+            {
+                <EmailMinCard display="mail" SelectMailNotify="SelectMail"/>
+            }
+        </div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card">
+                    <div>From: @selected.SenderName</div>
+                    <div>To: @selected.ReceiverName</div>
+                    <div>Title: @selected.Title</div>
+                    <div>Send on: @selected.Timestamp</div>
+                </div>
+                <div class="card">@selected.Body</div>
+            </div>
+        </div>
+    </div>
+}
+@code
+{
+    List<Email> _emails = null;
+    Email selected;
+    protected override void OnInitialized()
+    {
+        _emails = emailService.GetAllMails();
+        selected = _emails.First();
+    }
+
+    void SelectMail(Email nextMail)
+    {
+        selected = nextMail;
+        StateHasChanged();
+    }
+
+    void NewMail()
+    {
+        navMgr.NavigateTo("/SendMail");
+    }
+
+}

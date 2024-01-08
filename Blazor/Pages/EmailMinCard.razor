@@ -1,0 +1,15 @@
+@using Blazor.Data
+<div class="card" @onclick="SelectMail">
+    <div>From: @display.SenderName</div>
+    <div>@display.Title.Substring(0, Math.Min(display.Title.Length, 20))</div>
+</div>
+
+@code {
+    [Parameter] public Email display { get; set; }
+    [Parameter] public EventCallback<Email> SelectMailNotify { get; set; }
+    
+    void SelectMail()
+    {
+        SelectMailNotify.InvokeAsync(display);
+    }
+}
