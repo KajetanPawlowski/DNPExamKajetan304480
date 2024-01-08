@@ -18,21 +18,51 @@ public class DataService : IDataService
     public Task<List<Project>> GetAllProjects(SearchProjectsDTO dto)
     {
         return Task.FromResult(projects);
+        //run out of time to implement
     }
 
     public Task<Project> GetProject(int projectId)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(projects.FirstOrDefault(p => p.Id == projectId));
     }
 
-    public Task<Project> CreateProject(CreateProjectDTO dto)
+    public async Task<Project> CreateProject(CreateProjectDTO dto)
     {
-        throw new NotImplementedException();
+        Project created = new()
+        {
+            Id = projects.Count,
+            Title = dto.Title,
+            ResponsibleName = dto.ResponsibleName,
+            Status = dto.Status
+        };
+        foreach (var userStory in dto.UserStories)
+        {
+            AddUserStoryDTO dtoUS = new()
+            {
+                Description = userStory.Description,
+                Estimate = userStory.Estimate,
+                ProjectId = created.Id
+            };
+            await AddUserStory(dtoUS);
+        }
+        return created;
     }
 
-    public Task<Project> AddUserStory(AddUserStoryDTO dto)
+    public async Task<Project> AddUserStory(AddUserStoryDTO dto)
     {
-        throw new NotImplementedException();
+        UserStory story = new()
+        {
+            Id = userStories.Count,
+            Description = dto.Description,
+            Estimate = dto.Estimate
+        };
+        Project project = projects.FirstOrDefault(p => p.Id == dto.ProjectId);
+        if (project == null)
+        {
+            throw new Exception();
+        }
+        project.UserStories.Add(story);
+        return project;
     }
     private void CreateDummyProjects(int count)
     {
